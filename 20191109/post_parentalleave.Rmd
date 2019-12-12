@@ -1,0 +1,30 @@
+---
+title: "Parental leave"
+output: html_notebook
+---
+
+## Abstract
+
+----------
+
+
+
+```{r, eval = FALSE, message = FALSE}
+# attach packages
+library(tidyverse)
+library(eurostat)
+```
+
+----------
+
+
+
+```{r, message = FALSE}
+# search and download data from eurostats
+search_eurostat("parental leave")
+
+df <- get_eurostat("lfso_10lparlea", type = "label", stringsAsFactors = FALSE)
+head(df)
+```
+
+
