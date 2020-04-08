@@ -6,11 +6,11 @@ one thing I was missing all the time is a simple one-line function to
 add small text labels to points in a scatter plot (a.k.a. dot plot,
 a.k.a. `xyplot()` in lattice).
 
-It’s not that there are no functions for text labels out there, it’s
+It's not that there are no functions for text labels out there, it's
 just that lattice plots are not compatible with the ggplot universe, and
 other more hacky solutions are not really appealing. Finally I got so
 frustrated that I wrote my own panel function for text labels of points.
-Here is what I’ve gone through.
+Here is what I've gone through.
 
 ------------------------------------------------------------------------
 
@@ -19,11 +19,11 @@ Here is what I’ve gone through.
 In computational biology (just as in any other data science field) we
 very, very often encounter the situation that we want to compare two
 biological conditions to each other, such as a control condition
-*versus* a treatment (e.g. bacteria grown on substrate A versus
+*versus* a treatment (e.g. bacteria grown on substrate A versus
 substrate B). But for each condition we have several thousands of
-measurements obtained in parallel, thanks to the ‘Omics revolution. Now
+measurements obtained in parallel, thanks to the 'Omics revolution. Now
 the question is, which single protein or transcript is the most
-interesting (or ’differentially expressed’) between the two conditions?
+interesting (or 'differentially expressed') between the two conditions?
 One of the easiest ways to look at the data is to plot condition A
 versus B.
 
@@ -50,12 +50,12 @@ versus B.
     head(df)
 
     ##   gene     cond_A      cond_B    pathway
-    ## 1  qsg  0.1332091  0.38443217 transcript
-    ## 2  uhx -1.0403294 -0.79211868   translat
-    ## 3  cqc -1.4777073 -0.83976620     carbon
-    ## 4  jxg  0.4017326  0.43352255   nitrogen
-    ## 5  oiu -0.1834150  0.04429392    unknown
-    ## 6  ppf -0.7155713  0.40525452 transcript
+    ## 1  rvu -0.1720068 -0.46101237 transcript
+    ## 2  sbt  0.3354676 -0.30279897   translat
+    ## 3  iwh -1.5659390  0.12410834     carbon
+    ## 4  wpe  1.8496987  0.04856646   nitrogen
+    ## 5  zdv -0.1087777 -1.57272159    unknown
+    ## 6  hjo -0.3003987 -0.82730784 transcript
 
     # change default plot symbol
     theme <- trellis.par.get()
@@ -90,12 +90,12 @@ that we construct on the fly.
 
 ![](post_directlabels_files/figure-markdown_strict/unnamed-chunk-2-1.png)
 
-The **problems are obvious**. It’s inconvenient to think about proper
+The **problems are obvious**. It's inconvenient to think about proper
 placement of labels for every new plot (below or above points, how far
 away?); Labels are overlapping with each other due to the rigid way we
 place them; To plot only a few labels we would have to make tedious
 manual selection of points using additional variables; Grouping is
-ignored for the labels and it’s not straight forward to implement it, so
+ignored for the labels and it's not straight forward to implement it, so
 we have to go with the simple solution of painting them all grey. I
 often found myself moving labels around in Inkscape and deleting the
 unwanted ones, which is really not efficient if you do it twice per
@@ -108,7 +108,7 @@ lattice *and* ggplot2, the `directlabels` package
 ([link](http://directlabels.r-forge.r-project.org)). The idea behind
 this package is to provide functions for labeling points, lines or other
 objects in a variety of plots, not only scatterplots. It is a well-made
-and comprehensive package with many options for customization, but it’s
+and comprehensive package with many options for customization, but it's
 not the right tool for our problem: It builds heavily on the idea of
 grouping variables and will **only place one label per group, not per
 point**.
@@ -126,7 +126,7 @@ point**.
 
 ![](post_directlabels_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
-That’s not really what I want, although it is quite useful for other
+That's not really what I want, although it is quite useful for other
 purposes. In fact we can also set `groups = gene` and *will* get
 individual gene labels, but they are distributed over the entire plot
 area, and we lose our grouping by pathway.
@@ -138,7 +138,7 @@ can find in my `Rtools` package on github (you might also just download
 only the function itself if you want).
 
     require(devtools)
-    devtools::install_github("https://github.com/m-jahn/Rtools")
+    devtools::install_github("https://github.com/m-jahn/R-tools")
 
 The function has all the different options that I want to customize text
 labels, like connecting lines to the points, boxes around labels,
@@ -166,8 +166,8 @@ of the custom options.
 
 Now we can quickly see what our points of interest are. Plus, colors
 from grouping are preserved for lines, boxes, and text of the label.
-Labels don’t overlap because the underlying method for placement is
-‘smart’ enough to push them to free areas. I just selected a subset of
+Labels don't overlap because the underlying method for placement is
+'smart' enough to push them to free areas. I just selected a subset of
 interesting points to be labelled using the `y_boundary` option. And of
 course, the appearance of boxes, lines, and so on can be easily
 customized.

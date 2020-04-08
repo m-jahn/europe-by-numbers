@@ -1,20 +1,12 @@
 ---
 title: "How to label points on a scatterplot with R (for lattice)"
-output: md_document
+output: html_notebook
 # md_document; github_document; html_notebook
 ---
 
-The famous **ggplot2** package for R has numerous packages extending its basic plot
-functions, including **ggrepel** that draws nice text labels for each point of a 
-scatterplot. But I am using **lattice** for many years now, and came to like its
-look and customization options. However, one thing I was missing all 
-the time is a simple one-line function to add small text labels to points in a scatter plot 
-(a.k.a. dot plot, a.k.a. `xyplot()` in lattice). 
+The famous **ggplot2** package for R has numerous packages extending its basic plot functions, including **ggrepel** that draws nice text labels for each point of a scatterplot. But I am using **lattice** for many years now, and came to like its look and customization options. However, one thing I was missing all the time is a simple one-line function to add small text labels to points in a scatter plot (a.k.a. dot plot, a.k.a. `xyplot()` in lattice). 
 
-It's not that there are no functions for text labels out there, it's just that 
-lattice plots are not compatible with the ggplot universe, and other more hacky
-solutions are not really appealing. Finally I got so frustrated that I wrote my
-own panel function for text labels of points. Here is what I've gone through.
+It's not that there are no functions for text labels out there, it's just that lattice plots are not compatible with the ggplot universe, and other more hacky solutions are not really appealing. Finally I got so frustrated that I wrote my own panel function for text labels of points. Here is what I've gone through.
 
 ----------
 
@@ -25,7 +17,7 @@ encounter the situation that we want to compare two biological conditions to eac
 a control condition *versus* a treatment (e.g. bacteria grown on substrate A versus substrate B).
 But for each condition we have several thousands of measurements obtained in parallel, thanks
 to the 'Omics revolution. Now the question is, which single protein or transcript is
-the most interesting (or 'differentially expressed') between the two conditions?
+the most interesting (or differentially expressed) between the two conditions?
 One of the easiest ways to look at the data is to plot condition A versus B.
 
 ```{r, fig.height = 5, fig.width = 5, warning = FALSE}
@@ -57,6 +49,7 @@ xyplot(cond_A ~ cond_B, df,
   groups = pathway, 
   par.settings = theme,
   auto.key = list(columns = 3))
+
 ```
 
 ### The hacky approach
@@ -122,7 +115,7 @@ in my `Rtools` package on github (you might also just download only the function
 
 ```{r, eval = FALSE, message = FALSE}
 require(devtools)
-devtools::install_github("https://github.com/m-jahn/Rtools")
+devtools::install_github("https://github.com/m-jahn/R-tools")
 ```
 
 The function has all the different options that I want to customize text
