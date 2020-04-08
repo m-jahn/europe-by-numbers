@@ -1,0 +1,79 @@
+---
+title: "Is Sweden smarter than the rest of Europe?"
+output: html_notebook
+# md_document; github_document; html_notebook
+---
+
+The corona virus crisis has overshadowed the life of many EU citizens for quite some time now, and will likely continue to do so for the coming months. The harsh social distancing measures taken by many governments leave work places deserted, factories standing still and shops closed. However, one small country on the Northern edge of Europe is going it's own way to tackle the CoV pandemic and it is highly interesting how this experiment will turn out. I am part of that experiment.
+
+----------
+
+### Sweden did it his way
+
+Some European countries are recently showing signs that the spreading of the virus is slowing down. 
+
+...
+
+The Johns Hopkins institute is collecting world wide data on COVID-19 and shares it on github for public scrutiny and re-use. I cloned the repository so that I can access the most recent data and update if neccesary (the repo is updated every day 12 AM).
+
+```{bash, eval = FALSE}
+git clone https://github.com/CSSEGISandData/COVID-19.git
+```
+
+
+### Yet another visualization of CoV spread?
+
+Unfortunately yes. There is hardly a phenomen that got better news coverage than COVID-19, so what's the point of it? One motivation is simply to see how the Swedish strategy will turn out in the end. In contrast to all the world maps and bubble charts, I will focus purely on Sweden, Germany, and some of their neighboring countries in the EU that have similar population size, population density, and health care systems (to some degree only, of course).
+
+
+```{r, message = FALSE}
+# attach packages
+library(tidyverse)
+library(lattice)
+library(latticeExtra)
+library(Rtools)
+```
+
+-----
+
+The first step is to read the `*.csv` tables for confirmed cases and deaths from the Johns repository's time series folder. The time series are in a 'wide' format which is not nice to work with, so we need to reshape it to a 'long' format as it is typical for data bases. The long format has all observations of one type in a single column, and all meta data (such as country, or time) in others.
+
+
+```{r message = FALSE}
+df_world_cases <- read_csv("COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+df_world_death <- read_csv("COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+
+# preview a table
+head(df_world_cases[-1])
+
+# remove slashes from column names
+colnames(df_world_cases) <- colnames(df_world_cases) %>% gsub("/", "_", .)
+colnames(df_world_death) <- colnames(df_world_death) %>% gsub("/", "_", .)
+
+# remove greenland and faroe islands from data sets
+df_world_cases <- df_world_cases %>% filter(!Province_State %in% c("Greenland", "Faroe Islands"))
+df_world_death <- df_world_death %>% filter(!Province_State %in% c("Greenland", "Faroe Islands"))
+
+# select only some countries of interest
+countries = c("Sweden", "Finland", "Norway", "Denmark", "Germany", "Poland")
+df_world_cases <- filter(df_world_cases, Country_Region %in% countries)[-1]
+df_world_death <- filter(df_world_death, Country_Region %in% countries)[-1]
+
+# reshape to long format using gather
+# we gather only dates in a single new column
+df_world_cases <- gather(df_world_cases, "date", "cases", "1_22_20":"4_7_20")
+df_world_death <- gather(df_world_death, "date", "cases", "1_22_20":"4_7_20")
+
+# now that confirmed cases and deaths are all in one column
+# we might as well combine the two dfs in one
+df_world <- bind_cols(
+  df_world_cases, 
+  rename(df_world_death["cases"], deaths = cases)
+  )
+
+# preview after re-shaping to long format
+head(df_world)
+```
+
+
+
